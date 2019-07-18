@@ -6,7 +6,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <chainparams.h>
-
+#include <arith_uint256.h>
 #include <chainparamsseeds.h>
 #include <consensus/merkle.h>
 #include <tinyformat.h>
@@ -72,6 +72,57 @@ CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits,
                               nBits, nVersion, genesisReward);
 }
 
+// just for counting new genesis nNounce
+static void CountGenesisBlock(uint32_t nTime, uint32_t nBits) {
+    uint32_t nNounce = 0;
+    std::ofstream outFile;//创建了一个ofstream 对象
+    outFile.open("out.log", std::ios::app);//outFile 与一个文本文件关联
+    char tmpchs[256];
+    sprintf(tmpchs, "nBits: %8x\n", nBits);
+    outFile << tmpchs;
+    outFile.flush();
+    arith_uint256 hashTarget = arith_uint256().SetCompact(nBits);
+    int count = 0;
+    int mil = 0;
+    int step = 5000000 - 1;
+    nNounce = mil * step;
+    while (true) {
+        nNounce++;
+        CBlock genesis = CreateGenesisBlock(nTime, nNounce, nBits, 1,
+                                            INITIAL_REWARD);
+        if (UintToArith256(genesis.GetHash()) <= hashTarget) {
+            sprintf(tmpchs, "nTime: %u\n", nTime);
+            outFile << tmpchs;
+            outFile.flush();
+            sprintf(tmpchs, "nNounce: %u\n", nNounce);
+            outFile << tmpchs;
+            outFile.flush();
+            sprintf(tmpchs, "hash: %s\n", genesis.GetHash().GetHex().c_str());
+            outFile << tmpchs;
+            outFile.flush();
+            sprintf(tmpchs, "merkle: %s\n", genesis.hashMerkleRoot.GetHex().c_str());
+            outFile << tmpchs;
+            outFile.flush();
+            return;
+        }
+        if (count++ == step) {
+            mil++;
+            count = 0;
+            sprintf(tmpchs, " not found nNounce: %u\n", nNounce);
+            outFile << tmpchs;
+            outFile.flush();
+        }
+        if (nNounce == 0) {
+            nTime++;
+            mil = 0;
+            count = 0;
+            sprintf(tmpchs, " new nTime: %u\n", nTime);
+            outFile << tmpchs;
+            outFile.flush();
+        }
+    }
+}
+
 /**
  * Main network
  */
@@ -100,7 +151,7 @@ public:
         // 000000000000000004a1b34462cb8aeebd5799177f7a29cf28f2d1961716b5b5
         consensus.CSVHeight = 0;
         consensus.powLimit = uint256S(
-            "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+            "000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         // two weeks
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         consensus.nPowTargetSpacing = 1 * 60;
@@ -109,7 +160,7 @@ public:
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S(
-            "000000000000000000000000000000000000000000f22fbd89943b5f5104e4ec");
+            "00");
 
         // By default assume that the signatures in ancestors of this block are
         // valid.
@@ -138,11 +189,11 @@ public:
         nDefaultPort = 8333;
         nPruneAfterHeight = 100000;
 
-        genesis = CreateGenesisBlock(1544508901, 69064047, 0x1d00ffff, 1,
+        genesis = CreateGenesisBlock(1553244851, 4651212, 0x1e00ffff, 1,
                                      INITIAL_REWARD);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-               uint256S("000000004d9c07f2b94e5ee797efb51e7ed299099f948c9832293085e389a5d5"));
+               uint256S("0000003f8fcc206f3bb4b79699031a19dbde779384d855b03e77a605f3de2732"));
         assert(genesis.hashMerkleRoot ==
                uint256S("e75e490f5b84c4b71e6501cb509510a43d5b2d1b90f11fbcbacbd82e0a256a7f"));
 
@@ -208,7 +259,7 @@ public:
         // 00000000025e930139bac5c6c31a403776da130831ab85be56578f3fa75369bb
         consensus.CSVHeight = 0;
         consensus.powLimit = uint256S(
-            "00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+            "000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         // two weeks
         consensus.nPowTargetTimespan = 14 * 24 * 60 * 60;
         consensus.nPowTargetSpacing = 1 * 60;
@@ -217,7 +268,7 @@ public:
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S(
-            "00000000000000000000000000000000000000000000004f587a0e52b7984751");
+            "00");
 
         // By default assume that the signatures in ancestors of this block are
         // valid.
@@ -242,10 +293,10 @@ public:
         nPruneAfterHeight = 1000;
 
         genesis =
-                CreateGenesisBlock(1544509902, 4156746073, 0x1d00ffff, 1, INITIAL_REWARD);
+                CreateGenesisBlock(1553244900, 5004603, 0x1e00ffff, 1, INITIAL_REWARD);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-               uint256S("00000000b217394e16a89ee18d18be4068b240a86738f52146f82917893b5474"));
+               uint256S("0000008d19e5d5292ea51c43f4799a97542c11b8018128777875e4649057fdc5"));
         assert(genesis.hashMerkleRoot ==
                uint256S("e75e490f5b84c4b71e6501cb509510a43d5b2d1b90f11fbcbacbd82e0a256a7f"));
 
@@ -330,10 +381,10 @@ public:
         nDefaultPort = 18444;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1544519900, 1, 0x207fffff, 1, INITIAL_REWARD);
+        genesis = CreateGenesisBlock(1553244999, 1, 0x207fffff, 1, INITIAL_REWARD);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock ==
-               uint256S("2ca612a3f80dd99fda595c9b0c3c108ba80eef4a861d32bbb6a8406d0a1c483f"));
+               uint256S("62ac941a4e951f03bfe2556a3907d5b9ce3de119cf67f4c15b95075ef1c9cf96"));
         assert(genesis.hashMerkleRoot ==
                uint256S("e75e490f5b84c4b71e6501cb509510a43d5b2d1b90f11fbcbacbd82e0a256a7f"));
 
