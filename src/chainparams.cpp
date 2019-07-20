@@ -236,8 +236,8 @@ public:
 
         consensus.rewardAddress = "FGwx11b5jnXkfpTzehuMFdCVnnqc1pCphH";
         vRewardAddresses.push_back(consensus.rewardAddress);
-        consensus.coinbaseMaturity = 14400;
-        consensus.developerRewardMaturity = 144000;
+        consensus.coinbaseMaturity = 100;
+        consensus.developerRewardMaturity = 200;
     }
 };
 
@@ -328,8 +328,8 @@ public:
 
         consensus.rewardAddress = "mrdnqGEyhVkLpm4aWbDa79tHd8RJ7rvp5g";
         vRewardAddresses.push_back(consensus.rewardAddress);
-        consensus.coinbaseMaturity = 14400;
-        consensus.developerRewardMaturity = 144000;
+        consensus.coinbaseMaturity = 100;
+        consensus.developerRewardMaturity = 200;
     }
 };
 
