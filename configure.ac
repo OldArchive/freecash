@@ -1,24 +1,24 @@
 dnl require autoconf 2.60 (AS_ECHO/AS_ECHO_N)
 AC_PREREQ([2.60])
-define(_CLIENT_VERSION_MAJOR, 0)
-define(_CLIENT_VERSION_MINOR, 19)
-define(_CLIENT_VERSION_REVISION, 9)
+define(_CLIENT_VERSION_MAJOR, 1)
+define(_CLIENT_VERSION_MINOR, 0)
+define(_CLIENT_VERSION_REVISION, 0)
 define(_CLIENT_VERSION_BUILD, 0)
 define(_CLIENT_VERSION_IS_RELEASE, true)
 define(_COPYRIGHT_YEAR, 2019)
 define(_COPYRIGHT_HOLDERS,[The %s developers])
-define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[Bitcoin]])
-AC_INIT([Bitcoin ABC],[_CLIENT_VERSION_MAJOR._CLIENT_VERSION_MINOR._CLIENT_VERSION_REVISION],[https://github.com/Bitcoin-ABC/bitcoin-abc/issues],[bitcoin-abc],[https://bitcoinabc.org/])
+define(_COPYRIGHT_HOLDERS_SUBSTITUTION,[[Freecash]])
+AC_INIT([Freecash],[_CLIENT_VERSION_MAJOR._CLIENT_VERSION_MINOR._CLIENT_VERSION_REVISION],[https://github.com/freecashorg/freecash/issues],[freecash],[https://freecash.org/])
 AC_CONFIG_SRCDIR([src/validation.cpp])
 AC_CONFIG_HEADERS([src/config/bitcoin-config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
 
-BITCOIN_DAEMON_NAME=bitcoind
-BITCOIN_GUI_NAME=bitcoin-qt
-BITCOIN_CLI_NAME=bitcoin-cli
-BITCOIN_TX_NAME=bitcoin-tx
-BITCOIN_SEEDER_NAME=bitcoin-seeder
+BITCOIN_DAEMON_NAME=freecashd
+BITCOIN_GUI_NAME=freecash-qt
+BITCOIN_CLI_NAME=freecash-cli
+BITCOIN_TX_NAME=freecash-tx
+BITCOIN_SEEDER_NAME=freecash-seeder
 
 AC_CANONICAL_HOST
 
